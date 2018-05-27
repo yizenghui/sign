@@ -49,7 +49,7 @@ func main() {
 	// r.Use(middleware.JWT([]byte("secret")))
 
 	// 新增助力
-	api.POST("/post", c.NewPush)
+	api.POST("/sign", c.NewPush)
 
 	// 获取用户资源
 	api.GET("/crypt", c.Crypt)

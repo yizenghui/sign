@@ -14,7 +14,17 @@ import (
 
 	"github.com/chanxuehong/wechat.v2/mp/message/template"
 	wxbizdatacrypt "github.com/yilee/wx-biz-data-crypt"
+	"github.com/yizenghui/sign/db"
 )
+
+//TokenServe token 服务器
+var TokenServe *DefaultAccessTokenServer
+
+func init() {
+
+	TokenServe = NewDefaultAccessTokenServer(config.ReaderMinApp.AppID, config.ReaderMinApp.AppSecret)
+
+}
 
 // OpenIDData 开放数据 openID
 type OpenIDData struct {
@@ -187,18 +197,18 @@ func SaveQrcodeImg(imageURL, saveName string, body []byte) (n int64, err error) 
 }
 
 // GetCryptData 解密数据
-func GetCryptData(sessionKey, encryptedData, iv string) (*Fans, error) {
+func GetCryptData(sessionKey, encryptedData, iv string) (*db.Fans, error) {
 
 	log.Println(config.ReaderMinApp.AppID, sessionKey, encryptedData, iv)
 	pc := wxbizdatacrypt.NewWXBizDataCrypt(config.ReaderMinApp.AppID, sessionKey)
 	userInfo, err := pc.Decrypt(encryptedData, iv)
 	log.Println(err)
 	if err != nil {
-		return &Fans{}, err
+		return &db.Fans{}, err
 	}
 	fans, err := GetFansByOpenID(userInfo.OpenID)
 	if err != nil {
-		return &Fans{}, err
+		return &db.Fans{}, err
 	}
 	if fans.SessionKey != sessionKey {
 		fans.OpenID = userInfo.OpenID
@@ -219,9 +229,9 @@ func GetCryptData(sessionKey, encryptedData, iv string) (*Fans, error) {
 }
 
 // GetFansByOpenID 解密数据
-func GetFansByOpenID(openID string) (*Fans, error) {
+func GetFansByOpenID(openID string) (*db.Fans, error) {
 	var err error
-	var fans Fans
+	var fans db.Fans
 	if openID != "" {
 		fans.GetFansByOpenID(openID)
 	} else {
