@@ -22,6 +22,81 @@ func NewSign(c echo.Context) error {
 	return c.JSON(http.StatusOK, openID)
 }
 
+// CheckTodaySign 检查用户今日签到情况
+func CheckTodaySign(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		state := c.QueryParam("state")
+		f, _ := getUser(openID)
+		if state == `complete` { // 完成的
+
+		} // else fail
+
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetUserSignStatistics 获取用户签到情况
+func GetUserSignStatistics(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		state := c.QueryParam("state")
+		f, _ := getUser(openID)
+		if state == `complete` { // 完成的
+
+		} // else fail
+
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetTodayNewSign 获取今日最新签到
+func GetTodayNewSign(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		state := c.QueryParam("state")
+		f, _ := getUser(openID)
+		if state == `complete` { // 完成的
+
+		} // else fail
+
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetSignRanking 用户签到排名
+func GetSignRanking(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		state := c.QueryParam("state")
+		f, _ := getUser(openID)
+		if state == `complete` { // 完成的
+
+		} // else fail
+
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetSignLasting 最大持续天数
+func GetSignLasting(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		state := c.QueryParam("state")
+		f, _ := getUser(openID)
+		if state == `complete` { // 完成的
+
+		} // else fail
+
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
 // NewPush 新建一个push
 func NewPush(c echo.Context) error {
 	openID := getOpenID(c)
