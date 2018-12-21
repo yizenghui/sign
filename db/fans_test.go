@@ -8,6 +8,12 @@ import (
 	"testing"
 )
 
-func Test_GetShareRankPost(t *testing.T) {
+func Test_CheckSign(t *testing.T) {
 
+	var fans Fans
+
+	fans.GetFansByOpenID(`as213sadassaklamsdlk213123`)
+	// t.Fatal(fans.AllFans())
+	t.Fatal(fans.DoSign())
+	t.Fatal(fans.CheckSign())
 }

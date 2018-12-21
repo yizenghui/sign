@@ -7,49 +7,28 @@ import (
 	cpi "github.com/yizenghui/sign/core"
 )
 
-// NewSign 新建一个push
-func NewSign(c echo.Context) error {
-	openID := getOpenID(c)
-	if openID != "" {
-		state := c.QueryParam("state")
-		f, _ := getUser(openID)
-		if state == `complete` { // 完成的
-
-		} // else fail
-
-		return c.JSON(http.StatusOK, f)
-	}
-	return c.JSON(http.StatusOK, openID)
-}
-
-// CheckTodaySign 检查用户今日签到情况
+// CheckTodaySign 今天能否签到
 func CheckTodaySign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		state := c.QueryParam("state")
-		f, _ := getUser(openID)
-		if state == `complete` { // 完成的
-
-		} // else fail
-
-		return c.JSON(http.StatusOK, f)
+		if cpi.CheckOpenIDCanSign(openID) == nil {
+			return c.JSON(http.StatusOK, `t`)
+		}
+		return c.JSON(http.StatusOK, `f`)
 	}
-	return c.JSON(http.StatusOK, openID)
+	return c.JSON(http.StatusOK, `f`)
 }
 
-// GetUserSignStatistics 获取用户签到情况
-func GetUserSignStatistics(c echo.Context) error {
+// DoSign 今天能否签到
+func DoSign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		state := c.QueryParam("state")
-		f, _ := getUser(openID)
-		if state == `complete` { // 完成的
-
-		} // else fail
-
-		return c.JSON(http.StatusOK, f)
+		if cpi.FansDoSign(openID) == nil {
+			return c.JSON(http.StatusOK, `t`)
+		}
+		return c.JSON(http.StatusOK, `f`)
 	}
-	return c.JSON(http.StatusOK, openID)
+	return c.JSON(http.StatusOK, `f`)
 }
 
 // GetTodayNewSign 获取今日最新签到
@@ -67,7 +46,7 @@ func GetTodayNewSign(c echo.Context) error {
 	return c.JSON(http.StatusOK, openID)
 }
 
-// GetSignRanking 用户签到排名
+// GetSignRanking 用户签到排名(总榜)
 func GetSignRanking(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
@@ -92,6 +71,76 @@ func GetSignLasting(c echo.Context) error {
 
 		} // else fail
 
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetUserInfo 新建一个push
+func GetUserInfo(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// UserDoSign 用户进行签到
+func UserDoSign(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// CheckUserSign 检查用户今日签到情况
+func CheckUserSign(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetTodaySignUsers 获取今日签到用户信息
+func GetTodaySignUsers(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetMonthRank 获取月排行榜
+func GetMonthRank(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetWeekRank 获取周排行榜
+func GetWeekRank(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
+		return c.JSON(http.StatusOK, f)
+	}
+	return c.JSON(http.StatusOK, openID)
+}
+
+// GetAllRank 获取总排行榜
+func GetAllRank(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		f, _ := getUser(openID)
 		return c.JSON(http.StatusOK, f)
 	}
 	return c.JSON(http.StatusOK, openID)

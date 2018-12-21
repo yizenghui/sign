@@ -15,8 +15,9 @@ func main() {
 		return c.String(http.StatusOK, "welcome to fire minapp api, this build by  go!")
 	})
 
-	// 获取用户签名
+	// 获取用户签名 token id
 	e.GET("/gettoken", c.GetToken)
+
 	// 解密数据内容(保存数据到库)
 	e.GET("/crypt", c.Crypt)
 
@@ -45,11 +46,30 @@ func main() {
 		Claims:     &c.JwtCustomClaims{},
 		SigningKey: []byte("secret"),
 	}
+
 	api.Use(middleware.JWTWithConfig(config))
 	// r.Use(middleware.JWT([]byte("secret")))
 
-	// 新增助力
-	api.POST("/sign", c.NewPush)
+	// 获取用户信息
+	api.GET("/user", c.GetUserInfo)
+
+	// 签到
+	api.GET("/dosign", c.UserDoSign)
+
+	// 检查签到
+	api.GET("/checksign", c.CheckUserSign)
+
+	// 获取今日签到名单
+	api.GET("/today", c.GetTodaySignUsers)
+
+	// 获得用户排行月榜
+	api.GET("/rank/month", c.GetMonthRank)
+
+	// 获得用户排行周榜
+	api.GET("/rank/week", c.GetWeekRank)
+
+	// 获得用户排行总榜
+	api.GET("/rank/all", c.GetAllRank)
 
 	// 获取用户资源
 	api.GET("/crypt", c.Crypt)

@@ -199,11 +199,11 @@ func SaveQrcodeImg(imageURL, saveName string, body []byte) (n int64, err error) 
 // GetCryptData 解密数据
 func GetCryptData(sessionKey, encryptedData, iv string) (*db.Fans, error) {
 
-	log.Println(config.ReaderMinApp.AppID, sessionKey, encryptedData, iv)
+	// log.Println(config.ReaderMinApp.AppID, sessionKey, encryptedData, iv)
 	pc := wxbizdatacrypt.NewWXBizDataCrypt(config.ReaderMinApp.AppID, sessionKey)
 	userInfo, err := pc.Decrypt(encryptedData, iv)
-	log.Println(err)
 	if err != nil {
+		log.Println(err)
 		return &db.Fans{}, err
 	}
 	fans, err := GetFansByOpenID(userInfo.OpenID)
@@ -238,4 +238,24 @@ func GetFansByOpenID(openID string) (*db.Fans, error) {
 		err = errors.New(string(`openID is empty!!!`))
 	}
 	return &fans, err
+}
+
+// CheckOpenIDCanSign 检查 openid 今天是否可以签到
+func CheckOpenIDCanSign(openID string) error {
+	var fans db.Fans
+	fans.GetFansByOpenID(openID)
+	if fans.CheckSign() {
+		return nil
+	}
+	return errors.New(string(`openID today is sign!!!`))
+}
+
+// FansDoSign 粉丝签到
+func FansDoSign(openID string) error {
+	var fans db.Fans
+	fans.GetFansByOpenID(openID)
+	if fans.DoSign() {
+		return nil
+	}
+	return errors.New(string(`openID today is sign!!!`))
 }

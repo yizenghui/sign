@@ -10,6 +10,10 @@ import (
 
 var db *gorm.DB
 
+func init() {
+	DB().AutoMigrate(&Fans{})
+}
+
 //DB 返回 *gorm.DB
 func DB() *gorm.DB {
 	if db == nil {

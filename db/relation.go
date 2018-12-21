@@ -11,11 +11,3 @@ type Relation struct {
 	RelationID uint `gorm:"index:id"` //被吸来ID
 	CreatedAt  time.Time
 }
-
-// RelationLog 记录 openID 吸引粉丝访问
-func (fans *Fans) RelationLog(relationID int) {
-	var rela = Relation{}
-	rela.FansID = fans.ID
-	rela.RelationID = uint(relationID)
-	DB().Create(rela)
-}
