@@ -70,10 +70,27 @@ func Crypt(c echo.Context) error {
 
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
+	type Data struct {
+		Ed string `json:"ed"`
+		Iv string `json:"iv"`
+	}
+	data := new(Data)
+	if err := c.Bind(data); err != nil {
+		return err
+	}
 
 	// sessionKey := c.QueryParam("sk")
-	encryptedData := c.QueryParam("ed")
-	iv := c.QueryParam("iv")
-	ret, _ := cpi.GetCryptData(claims.Session, encryptedData, iv)
+	// encryptedData := c.QueryParam("ed")
+	// iv := c.QueryParam("iv")
+	// log.Println(claims.Code, claims.Session, encryptedData, iv)
+	// ret, _ := cpi.GetCryptData(claims.Session, encryptedData, iv)
+
+	ret, _ := cpi.GetCryptData(claims.Session, data.Ed, data.Iv)
 	return c.JSON(http.StatusOK, ret)
+}
+
+// CheckOpenID 解密同步用户信息
+func CheckOpenID(c echo.Context) error {
+
+	return c.JSON(http.StatusOK, getOpenID(c))
 }

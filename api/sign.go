@@ -90,20 +90,33 @@ func GetUserInfo(c echo.Context) error {
 func UserDoSign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		f, _ := getUser(openID)
-		return c.JSON(http.StatusOK, f)
+		if cpi.FansDoSign(openID) == nil {
+			return c.JSON(http.StatusOK, `t`)
+		}
+		return c.JSON(http.StatusNotFound, `Please come back tomorrow.`)
 	}
-	return c.JSON(http.StatusOK, openID)
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
 
 // CheckUserSign 检查用户今日签到情况
 func CheckUserSign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		f, _ := getUser(openID)
-		return c.JSON(http.StatusOK, f)
+		if cpi.CheckOpenIDCanSign(openID) == nil {
+			return c.JSON(http.StatusOK, `t`)
+		}
+		return c.JSON(http.StatusOK, `Please come back tomorrow.`)
 	}
-	return c.JSON(http.StatusOK, openID)
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
+}
+
+// GetTodaySignInfo 获取今天签到详细情况
+func GetTodaySignInfo(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		return c.JSON(http.StatusOK, cpi.GetTodaySignInfo(openID))
+	}
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
 
 // GetTodaySignUsers 获取今日签到用户信息

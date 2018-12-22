@@ -203,7 +203,7 @@ func GetCryptData(sessionKey, encryptedData, iv string) (*db.Fans, error) {
 	pc := wxbizdatacrypt.NewWXBizDataCrypt(config.ReaderMinApp.AppID, sessionKey)
 	userInfo, err := pc.Decrypt(encryptedData, iv)
 	if err != nil {
-		log.Println(err)
+		log.Println(`get userInfo err`, err)
 		return &db.Fans{}, err
 	}
 	fans, err := GetFansByOpenID(userInfo.OpenID)
@@ -248,6 +248,23 @@ func CheckOpenIDCanSign(openID string) error {
 		return nil
 	}
 	return errors.New(string(`openID today is sign!!!`))
+}
+
+// TodaySignData 今日签到情况
+type TodaySignData struct {
+	Status bool  `json:"status"`
+	Score  int64 `json:"score"`
+}
+
+// GetTodaySignInfo 检查 openid 今天是否可以签到
+func GetTodaySignInfo(openID string) TodaySignData {
+	var fans db.Fans
+	fans.GetFansByOpenID(openID)
+	// GetThenSignIsAddition
+	return TodaySignData{
+		Status: fans.CheckSign(),
+		Score:  fans.GetThenSignScore(),
+	}
 }
 
 // FansDoSign 粉丝签到

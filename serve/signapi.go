@@ -18,9 +18,6 @@ func main() {
 	// 获取用户签名 token id
 	e.GET("/gettoken", c.GetToken)
 
-	// 解密数据内容(保存数据到库)
-	e.GET("/crypt", c.Crypt)
-
 	// 获取推荐码(图片资源)
 	e.GET("/qrcode", func(c echo.Context) error {
 		scene := c.QueryParam("scene")
@@ -52,12 +49,19 @@ func main() {
 
 	// 获取用户信息
 	api.GET("/user", c.GetUserInfo)
+	api.GET("/checkopenid", c.CheckOpenID)
+	api.GET("/getuserinfo", c.GetUserInfo)
+
+	// 解密数据内容(保存用户数据到库)
+	api.POST("/crypt", c.Crypt)
 
 	// 签到
 	api.GET("/dosign", c.UserDoSign)
 
 	// 检查签到
 	api.GET("/checksign", c.CheckUserSign)
+	// 今天签到详细情况
+	api.GET("/gettodaysigninfo", c.GetTodaySignInfo)
 
 	// 获取今日签到名单
 	api.GET("/today", c.GetTodaySignUsers)

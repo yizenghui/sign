@@ -108,18 +108,23 @@ func (fans *Fans) DoSign() bool {
 	mid, wid, did := XID(time.Now())
 	if fans.MonthSignID == mid { // 是本月签到
 		fans.MonthRank = fans.MonthRank + score
+		fans.MonthToT++
 	} else {
 		fans.MonthSignID = mid
 		fans.MonthRank = score
+		fans.MonthToT = 1
 	}
 
 	if fans.WeekSignID == wid { // 是本周签到
 		fans.WeekRank = fans.WeekRank + score
+		fans.WeekToT++
 	} else {
 		fans.WeekSignID = wid
 		fans.WeekRank = score
+		fans.WeekToT = 1
 	}
 	fans.AllRank = fans.AllRank + score
+	fans.AllToT++
 	fans.DaySignID = did
 	fans.NextSignAdd = 0 //重置下次加成
 	fans.Save()
