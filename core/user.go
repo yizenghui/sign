@@ -252,8 +252,10 @@ func CheckOpenIDCanSign(openID string) error {
 
 // TodaySignData 今日签到情况
 type TodaySignData struct {
-	Status bool  `json:"status"`
-	Score  int64 `json:"score"`
+	Status  bool  `json:"status"`
+	Score   int64 `json:"score"`
+	AllRank int64 `json:"rank"`
+	AllToT  int64 `json:"total"`
 }
 
 // GetTodaySignInfo 检查 openid 今天是否可以签到
@@ -262,8 +264,10 @@ func GetTodaySignInfo(openID string) TodaySignData {
 	fans.GetFansByOpenID(openID)
 	// GetThenSignIsAddition
 	return TodaySignData{
-		Status: fans.CheckSign(),
-		Score:  fans.GetThenSignScore(),
+		Status:  fans.CheckSign(),
+		Score:   fans.GetThenSignScore(),
+		AllRank: fans.AllRank,
+		AllToT:  fans.AllToT,
 	}
 }
 
@@ -275,4 +279,11 @@ func FansDoSign(openID string) error {
 		return nil
 	}
 	return errors.New(string(`openID today is sign!!!`))
+}
+
+// GetFansInfo 粉丝签到
+func GetFansInfo(id uint) db.Fans {
+	var fans db.Fans
+	fans.GetFansByID(id)
+	return fans
 }

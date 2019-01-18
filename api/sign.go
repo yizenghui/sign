@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	cpi "github.com/yizenghui/sign/core"
@@ -94,6 +95,19 @@ func UserDoSign(c echo.Context) error {
 			return c.JSON(http.StatusOK, `t`)
 		}
 		return c.JSON(http.StatusNotFound, `Please come back tomorrow.`)
+	}
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
+}
+
+// GetUserSignInfo 查看用户详细 用户详情页
+func GetUserSignInfo(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, cpi.GetFansInfo(uint(id)))
 	}
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }

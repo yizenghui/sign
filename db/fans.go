@@ -44,6 +44,11 @@ func (fans *Fans) GetFansByOpenID(openID string) {
 	DB().Where(Fans{OpenID: openID}).FirstOrCreate(&fans)
 }
 
+// GetFansByID  通过ID获取粉丝信息
+func (fans *Fans) GetFansByID(id uint) {
+	DB().Where(Fans{ID: id}).First(&fans)
+}
+
 // Save 保存粉丝信息
 func (fans *Fans) Save() {
 	DB().Save(&fans)
