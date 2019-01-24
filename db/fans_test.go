@@ -6,6 +6,7 @@ package db
 
 import (
 	"testing"
+	"time"
 )
 
 func Test_CheckSign(t *testing.T) {
@@ -22,4 +23,10 @@ func Test_GetTodaySignFans(t *testing.T) {
 
 	var fans Fans
 	t.Fatal(fans.GetTodaySignFans())
+}
+
+func Test_GetTodaySignFansW(t *testing.T) {
+
+	var fans Fans
+	t.Fatal(fans.GetTodaySignFansW(time.Now()))
 }

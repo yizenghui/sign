@@ -69,6 +69,13 @@ func (fans *Fans) GetTodaySignFans() []Fans {
 	return list
 }
 
+// GetTodaySignFansW 获取今天签到的粉丝信息
+func (fans *Fans) GetTodaySignFansW(signAt time.Time) []Fans {
+	var list []Fans
+	DB().Where(`sign_at < ?`, signAt).Limit(10).Offset(0).Order(`sign_at desc`).Find(&list)
+	return list
+}
+
 // ShareLog 记录 openID 分享 Task 记录
 func (fans *Fans) ShareLog() {
 	var share = Share{}
