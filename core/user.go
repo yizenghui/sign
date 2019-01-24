@@ -123,7 +123,7 @@ func SendPostUpdateMSG(openID, formID, title, page string) error {
 	return err
 }
 
-//GetwxCodeUnlimit 发送更新通知
+//GetwxCodeUnlimit 获取微信二维码
 func GetwxCodeUnlimit(scene, page string) (file string, err error) {
 
 	name := GetMd5String(fmt.Sprintf(`%v%v`, scene, page))
@@ -160,6 +160,7 @@ func GetwxCodeUnlimit(scene, page string) (file string, err error) {
 	return file, err
 }
 
+// 字符串md5
 func GetMd5String(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
@@ -248,6 +249,13 @@ func CheckOpenIDCanSign(openID string) error {
 		return nil
 	}
 	return errors.New(string(`openID today is sign!!!`))
+}
+
+// GetTodaySignUsers 检查 openid 今天是否可以签到
+func GetTodaySignUsers(openID string) []db.Fans {
+	var fans db.Fans
+	// todo 这里面需要进一层封装?
+	return fans.GetTodaySignFans()
 }
 
 // TodaySignData 今日签到情况

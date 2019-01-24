@@ -17,3 +17,9 @@ func Test_CheckSign(t *testing.T) {
 	t.Fatal(fans.DoSign())
 	t.Fatal(fans.CheckSign())
 }
+
+func Test_GetTodaySignFans(t *testing.T) {
+
+	var fans Fans
+	t.Fatal(fans.GetTodaySignFans())
+}

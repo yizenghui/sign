@@ -33,7 +33,8 @@ type Fans struct {
 	NextSignAdd int16 // 下次签到加成 分享被浏览+1 (签到时清零)
 	PubAt       int64 // 设置公开我的签到情况时间(不为空时公开签到用户信息)
 	AppID       string
-	SessionKey  string // 粉丝上次的session key 如果有变化，同步一次粉丝数据
+	SessionKey  string    // 粉丝上次的session key 如果有变化，同步一次粉丝数据
+	SignAt      time.Time `sql:"index"` //最后一次签到时间
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   *time.Time `sql:"index"`
@@ -58,6 +59,13 @@ func (fans *Fans) Save() {
 func (fans *Fans) AllFans() []Fans {
 	var list []Fans
 	DB().Find(&list)
+	return list
+}
+
+// GetTodaySignFans 获取今天签到的粉丝信息
+func (fans *Fans) GetTodaySignFans() []Fans {
+	var list []Fans
+	DB().Limit(10).Offset(0).Order(`sign_at desc`).Find(&list)
 	return list
 }
 
@@ -131,7 +139,8 @@ func (fans *Fans) DoSign() bool {
 	fans.AllRank = fans.AllRank + score
 	fans.AllToT++
 	fans.DaySignID = did
-	fans.NextSignAdd = 0 //重置下次加成
+	fans.NextSignAdd = 0     //重置下次加成
+	fans.SignAt = time.Now() // 记录签到时间
 	fans.Save()
 	return true
 }

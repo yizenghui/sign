@@ -135,12 +135,9 @@ func GetTodaySignInfo(c echo.Context) error {
 
 // GetTodaySignUsers 获取今日签到用户信息
 func GetTodaySignUsers(c echo.Context) error {
-	openID := getOpenID(c)
-	if openID != "" {
-		f, _ := getUser(openID)
-		return c.JSON(http.StatusOK, f)
-	}
-	return c.JSON(http.StatusOK, openID)
+	// openID := getOpenID(c)
+	data := cpi.GetTodaySignUsers(`openID`)
+	return c.JSON(http.StatusOK, data)
 }
 
 // GetMonthRank 获取月排行榜

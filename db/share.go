@@ -6,8 +6,9 @@ import (
 
 //Share 分享记录
 type Share struct {
-	ID        uint `gorm:"primary_key"`
-	FansID    uint `gorm:"index:index"`
+	ID        uint
+	FansID    uint  `gorm:"index:index"`
+	SignID    int64 `gorm:"index:index"`
 	CreatedAt time.Time
 }
 
@@ -18,8 +19,10 @@ func (share *Share) Save() {
 
 // Log 记录 openID 分享 Task 记录
 func (share *Share) Log(openID string) {
+	_, _, did := XID(time.Now())
 	var fans = Fans{}
 	fans.GetFansByOpenID(openID)
 	share.FansID = fans.ID
+	share.SignID = did
 	DB().Create(share)
 }

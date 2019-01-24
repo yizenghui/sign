@@ -35,6 +35,8 @@ func main() {
 		return err2
 	})
 
+	e.GET("/gettodaysignusers", c.GetTodaySignUsers)
+
 	// Restricted group
 	api := e.Group("/api")
 
@@ -63,6 +65,8 @@ func main() {
 	api.GET("/checksign", c.CheckUserSign)
 	// 今天签到详细情况
 	api.GET("/gettodaysigninfo", c.GetTodaySignInfo)
+
+	api.GET("/gettodaysignusers", c.GetTodaySignUsers)
 
 	// 获取今日签到名单
 	api.GET("/today", c.GetTodaySignUsers)
