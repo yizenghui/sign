@@ -84,6 +84,7 @@ func main() {
 	api.GET("/crypt", c.Crypt)
 	// 图标
 	e.File("favicon.ico", "images/favicon.ico")
+	e.File("bg.jpg", "images/bg.jpg")
 	e.Logger.Fatal(e.Start(":8009"))
 	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 
