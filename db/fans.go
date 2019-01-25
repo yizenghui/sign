@@ -149,7 +149,21 @@ func (fans *Fans) DoSign() bool {
 	fans.NextSignAdd = 0     //重置下次加成
 	fans.SignAt = time.Now() // 记录签到时间
 	fans.Save()
+	fans.SignLog(score)
 	return true
+}
+
+// SignLog 保存签到记录
+func (fans *Fans) SignLog(score int64) {
+	mid, wid, did := XID(time.Now())
+	// 签到记录
+	var sign = Sign{}
+	sign.FansID = fans.ID
+	sign.MID = mid
+	sign.WID = wid
+	sign.DID = did
+	sign.Score = score // 本次签到得分
+	DB().Create(sign)
 }
 
 // GetThenSignScore 计算现在签到得分

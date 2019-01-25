@@ -6,9 +6,11 @@ import (
 
 //Sign 签到记录
 type Sign struct {
-	ID        uint `gorm:"primary_key"`
-	FansID    uint `gorm:"index:user_id"` // 谁在收集助力
-	JoinID    uint `gorm:"index:user_id"` // 参加活动凭证
-	PushID    uint `gorm:"index:user_id"` // 哪个朋友来给助力
+	ID        uint  // `gorm:"primary_key"`
+	FansID    uint  //`gorm:"index:fans_id"` // 粉丝id
+	MID       int64 //`gorm:"index:xid"`     // 月键
+	WID       int64 //`gorm:"index:xid"`     // 周键
+	DID       int64 //`gorm:"index:xid"`     // 日键
+	Score     int64
 	CreatedAt time.Time
 }
