@@ -133,6 +133,75 @@ func GetTodaySignInfo(c echo.Context) error {
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
 
+// GetPosterConfig 获取生成海报的数据配置
+func GetPosterConfig(c echo.Context) error {
+
+	// Poster 海报json数据
+	type Poster struct {
+		Width  int64                    `json:"width"`
+		Height int64                    `json:"height"`
+		Clear  bool                     `json:"clear"`
+		Views  []map[string]interface{} `json:"views"`
+	}
+
+	// 背景
+	mbg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/bg.jpg", "top": 0, "left": 0, "width": 375, "height": 360}
+
+	// 头像
+	muh := map[string]interface{}{"type": "image", "url": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epJEPdPqQVgv6D8bojGT4DrGXuEC4Oe0GXs5sMsN4GGpCegTUsBgL9SPJkN9UqC1s0iakjQpwd4h4A/132", "top": 127.5, "left": 29, "width": 55, "height": 55}
+
+	// 头像圈圈罩
+	muhc := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531401349117.jpeg", "top": 127.5, "left": 29, "width": 55, "height": 55}
+
+	// 顶部月
+	mmt := map[string]interface{}{"type": "text", "content": "一月", "fontSize": 14, "color": "#402D16", "textAlign": "left", "top": 0, "left": 320, "bolder": false}
+
+	// 顶部日
+	mdt := map[string]interface{}{"type": "text", "content": "24", "fontSize": 22, "color": "#402D16", "textAlign": "left", "top": 18, "left": 320, "bolder": true}
+
+	// 时间
+	mts := map[string]interface{}{"type": "text", "content": "07:08", "fontSize": 26, "color": "#402D16", "textAlign": "left", "top": 128, "left": 96, "bolder": true}
+
+	// 正文
+	mct := map[string]interface{}{"type": "text", "content": "坚持自律", "fontSize": 16, "color": "#402D16", "textAlign": "left", "top": 138, "left": 176, "bolder": false}
+
+	// 坚持天数
+	mcd := map[string]interface{}{"type": "text", "content": "13", "fontSize": 26, "color": "red", "textAlign": "center", "top": 128, "left": 270, "bolder": true}
+
+	// 正文
+	mctt := map[string]interface{}{"type": "text", "content": "天", "fontSize": 16, "color": "#402D16", "textAlign": "left", "top": 138, "left": 302, "bolder": false}
+
+	// 正文
+	mtt := map[string]interface{}{"type": "text", "content": "541234人正在参与", "fontSize": 16, "color": "#383549", "textAlign": "left", "top": 168, "left": 96, "bolder": false}
+
+	// 用户分享二维码
+	muqr := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 250, "left": 265, "width": 68, "height": 68}
+
+	// 正文
+	mqrt := map[string]interface{}{"type": "text", "content": "扫码一起改变", "fontSize": 14, "color": "#383549", "textAlign": "left", "top": 320, "left": 255, "bolder": false}
+
+	js := Poster{
+		375,
+		360,
+		true,
+		[]map[string]interface{}{
+			mbg,
+			muh,
+			muhc,
+			mmt,
+			mdt,
+			mts,
+			mct,
+			mcd,
+			mctt,
+			mtt,
+			muqr,
+			mqrt,
+		},
+	}
+	return c.JSON(http.StatusOK, js)
+}
+
 // GetTodaySignUsers 获取今日签到用户信息
 func GetTodaySignUsers(c echo.Context) error {
 	// openID := getOpenID(c)

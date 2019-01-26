@@ -66,6 +66,8 @@ func main() {
 	// 今天签到详细情况
 	api.GET("/gettodaysigninfo", c.GetTodaySignInfo)
 
+	api.GET("/getposter", c.GetPosterConfig)
+
 	api.GET("/gettodaysignusers", c.GetTodaySignUsers)
 
 	// 获取今日签到名单
@@ -85,7 +87,11 @@ func main() {
 	// 图标
 	e.File("favicon.ico", "images/favicon.ico")
 	e.File("bg.jpg", "images/bg.jpg")
-	e.Logger.Fatal(e.Start(":8009"))
+
+	e.Static("/static", "static")
+	// e.Logger.Fatal(e.Start(":80"))
+	// e.Logger.Fatal(e.Start(":8009"))
+	e.Logger.Fatal(e.StartTLS(":443", "ssl/1781098_signapi.readfollow.com.pem", "ssl/1781098_signapi.readfollow.com.key"))
 	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 
 }
