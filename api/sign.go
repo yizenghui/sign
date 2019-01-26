@@ -3,9 +3,11 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	cpi "github.com/yizenghui/sign/core"
+	"github.com/yizenghui/sign/db"
 )
 
 // CheckTodaySign 今天能否签到
@@ -133,46 +135,69 @@ func GetTodaySignInfo(c echo.Context) error {
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
 
-// GetPosterConfig 获取生成海报的数据配置
-func GetPosterConfig(c echo.Context) error {
+// Poster 海报json数据
+type Poster struct {
+	Width  int64                    `json:"width"`
+	Height int64                    `json:"height"`
+	Clear  bool                     `json:"clear"`
+	Views  []map[string]interface{} `json:"views"`
+}
 
-	// Poster 海报json数据
-	type Poster struct {
-		Width  int64                    `json:"width"`
-		Height int64                    `json:"height"`
-		Clear  bool                     `json:"clear"`
-		Views  []map[string]interface{} `json:"views"`
+// BuildPoster 创建用户专属海报
+func BuildPoster(user *db.Fans) (Poster, error) {
+
+	var MateArr = map[string]string{
+		//
+		"01": "一月",
+		"02": "二月",
+		"03": "三月",
+		"04": "四月",
+		"05": "五月",
+		"06": "六月",
+		"07": "七月",
+		"08": "八月",
+		"09": "九月",
+		"10": "十月",
+		"11": "十一月",
+		"12": "十二月",
 	}
 
+	t := time.Now()
 	// 背景
 	mbg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/bg.jpg", "top": 0, "left": 0, "width": 375, "height": 360}
 
 	// 头像
-	muh := map[string]interface{}{"type": "image", "url": "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epJEPdPqQVgv6D8bojGT4DrGXuEC4Oe0GXs5sMsN4GGpCegTUsBgL9SPJkN9UqC1s0iakjQpwd4h4A/132", "top": 127.5, "left": 29, "width": 55, "height": 55}
+	avatar := user.AvatarURL
+	if avatar == `` {
+		avatar = "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epJEPdPqQVgv6D8bojGT4DrGXuEC4Oe0GXs5sMsN4GGpCegTUsBgL9SPJkN9UqC1s0iakjQpwd4h4A/132"
+	}
+	muh := map[string]interface{}{"type": "image", "url": avatar, "top": 127.5, "left": 29, "width": 55, "height": 55}
 
 	// 头像圈圈罩
 	muhc := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531401349117.jpeg", "top": 127.5, "left": 29, "width": 55, "height": 55}
 
+	// mo := t.Format("一月")
+	d := t.Format(`01`)
 	// 顶部月
-	mmt := map[string]interface{}{"type": "text", "content": "一月", "fontSize": 14, "color": "#402D16", "textAlign": "left", "top": 0, "left": 320, "bolder": false}
+	mmt := map[string]interface{}{"type": "text", "content": MateArr[d], "fontSize": 14, "color": "#402D16", "textAlign": "left", "top": 0, "left": 320, "bolder": false}
 
 	// 顶部日
-	mdt := map[string]interface{}{"type": "text", "content": "24", "fontSize": 22, "color": "#402D16", "textAlign": "left", "top": 18, "left": 320, "bolder": true}
+	mdt := map[string]interface{}{"type": "text", "content": t.Format(`02`), "fontSize": 22, "color": "#402D16", "textAlign": "left", "top": 18, "left": 320, "bolder": true}
 
 	// 时间
-	mts := map[string]interface{}{"type": "text", "content": "07:08", "fontSize": 26, "color": "#402D16", "textAlign": "left", "top": 128, "left": 96, "bolder": true}
+	mts := map[string]interface{}{"type": "text", "content": t.Format(`15:04`), "fontSize": 26, "color": "#402D16", "textAlign": "left", "top": 128, "left": 96, "bolder": true}
 
 	// 正文
 	mct := map[string]interface{}{"type": "text", "content": "坚持自律", "fontSize": 16, "color": "#402D16", "textAlign": "left", "top": 138, "left": 176, "bolder": false}
 
 	// 坚持天数
-	mcd := map[string]interface{}{"type": "text", "content": "13", "fontSize": 26, "color": "red", "textAlign": "center", "top": 128, "left": 270, "bolder": true}
+	mcd := map[string]interface{}{"type": "text", "content": user.AllToT, "fontSize": 26, "color": "red", "textAlign": "center", "top": 128, "left": 270, "bolder": true}
 
 	// 正文
 	mctt := map[string]interface{}{"type": "text", "content": "天", "fontSize": 16, "color": "#402D16", "textAlign": "left", "top": 138, "left": 302, "bolder": false}
 
 	// 正文
-	mtt := map[string]interface{}{"type": "text", "content": "541234人正在参与", "fontSize": 16, "color": "#383549", "textAlign": "left", "top": 168, "left": 96, "bolder": false}
+	mtt := map[string]interface{}{"type": "text", "content": "124人正在参与", "fontSize": 16, "color": "#383549", "textAlign": "left", "top": 168, "left": 96, "bolder": false}
 
 	// 用户分享二维码
 	muqr := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 250, "left": 265, "width": 68, "height": 68}
@@ -180,7 +205,7 @@ func GetPosterConfig(c echo.Context) error {
 	// 正文
 	mqrt := map[string]interface{}{"type": "text", "content": "扫码一起改变", "fontSize": 14, "color": "#383549", "textAlign": "left", "top": 320, "left": 255, "bolder": false}
 
-	js := Poster{
+	poster := Poster{
 		375,
 		360,
 		true,
@@ -199,7 +224,18 @@ func GetPosterConfig(c echo.Context) error {
 			mqrt,
 		},
 	}
-	return c.JSON(http.StatusOK, js)
+	return poster, nil
+}
+
+// GetPosterConfig 获取生成海报的数据配置
+func GetPosterConfig(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		user, _ := getUser(openID)
+		poster, _ := BuildPoster(user)
+		return c.JSON(http.StatusOK, poster)
+	}
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
 
 // GetTodaySignUsers 获取今日签到用户信息

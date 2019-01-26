@@ -39,3 +39,32 @@ func Test_XID(t *testing.T) {
 	t.Fatal(XID(x))
 	t.Fatal(XID(time.Now()))
 }
+
+func Test_Date(t *testing.T) {
+
+	t.Fatal(time.Now().AddDate(0, 1, 30).Format(`15:04`))
+	t.Fatal(time.Now().AddDate(0, 1, 30).Format(`02`))
+	t.Fatal(time.Now().AddDate(0, 1, 30).Format(`01`))
+
+}
+
+func Test_Mate(t *testing.T) {
+
+	var MateArr = map[string]string{
+		//
+		"01": "一月",
+		"02": "二月",
+		"03": "三月",
+		"04": "四月",
+		"05": "五月",
+		"06": "六月",
+		"07": "七月",
+		"08": "八月",
+		"09": "九月",
+		"10": "十月",
+		"11": "十一月",
+		"12": "十二月",
+	}
+	d := time.Now().AddDate(0, 1, 30).Format(`01`)
+	t.Fatal(MateArr[d])
+}
