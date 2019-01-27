@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -234,6 +235,24 @@ func GetPosterConfig(c echo.Context) error {
 		user, _ := getUser(openID)
 		poster, _ := BuildPoster(user)
 		return c.JSON(http.StatusOK, poster)
+	}
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
+}
+
+// GetAppConfig 获取生成海报的数据配置
+func GetAppConfig(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		user, _ := getUser(openID)
+
+		config := map[string]interface{}{
+			"title":         "每天自律打卡",
+			"sharetitle":    "改变明天的人生",
+			"sharepath":     fmt.Sprint("/pages/index?from=", user.ID),
+			"shareimageUrl": "https://signapi.readfollow.com/static/images/bg.jpg",
+		}
+
+		return c.JSON(http.StatusOK, config)
 	}
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }

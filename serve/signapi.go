@@ -67,6 +67,7 @@ func main() {
 	api.GET("/gettodaysigninfo", c.GetTodaySignInfo)
 
 	api.GET("/getposter", c.GetPosterConfig)
+	api.GET("/getappconfig", c.GetAppConfig)
 
 	api.GET("/gettodaysignusers", c.GetTodaySignUsers)
 
@@ -90,8 +91,8 @@ func main() {
 
 	e.Static("/static", "static")
 	// e.Logger.Fatal(e.Start(":80"))
-	// e.Logger.Fatal(e.Start(":8009"))
-	e.Logger.Fatal(e.StartTLS(":443", "ssl/1781098_signapi.readfollow.com.pem", "ssl/1781098_signapi.readfollow.com.key"))
+	e.Logger.Fatal(e.Start(":8009"))
+	// e.Logger.Fatal(e.StartTLS(":443", "ssl/1781098_signapi.readfollow.com.pem", "ssl/1781098_signapi.readfollow.com.key"))
 	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 
 }
