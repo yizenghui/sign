@@ -249,7 +249,8 @@ func GetAppConfig(c echo.Context) error {
 			"title":         "每天自律打卡",
 			"sharetitle":    "改变明天的人生",
 			"sharepath":     fmt.Sprint("/pages/index?from=", user.ID),
-			"shareimageUrl": "https://signapi.readfollow.com/static/images/bg.jpg",
+			"shareimageUrl": "",
+			// "shareimageUrl": "https://signapi.readfollow.com/static/images/bg.jpg",
 		}
 
 		return c.JSON(http.StatusOK, config)
@@ -260,7 +261,9 @@ func GetAppConfig(c echo.Context) error {
 // GetTodaySignUsers 获取今日签到用户信息
 func GetTodaySignUsers(c echo.Context) error {
 	// openID := getOpenID(c)
-	data := cpi.GetTodaySignUsers(`openID`)
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+
+	data := cpi.GetTodaySignUsers(int64(page))
 	return c.JSON(http.StatusOK, data)
 }
 

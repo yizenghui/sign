@@ -69,10 +69,23 @@ func (fans *Fans) GetTodaySignFans() []Fans {
 	return list
 }
 
+// GetTodaySignFansPage 获取今天签到的粉丝信息
+func (fans *Fans) GetTodaySignFansPage(page int64) []Fans {
+	_, _, did := XID(time.Now())
+	offset := (page - 1) * 20
+	if offset < 0 {
+		offset = 0
+	}
+	var list []Fans
+	DB().Where(`day_sign_id = ?`, did).Limit(20).Offset(offset).Order(`sign_at desc`).Find(&list)
+	return list
+}
+
 // GetTodaySignFansW 获取今天签到的粉丝信息
 func (fans *Fans) GetTodaySignFansW(signAt time.Time) []Fans {
+	_, _, did := XID(time.Now())
 	var list []Fans
-	DB().Where(`sign_at < ?`, signAt).Limit(10).Offset(0).Order(`sign_at desc`).Find(&list)
+	DB().Where(`sign_at < ?`, signAt).Where(`day_sign_id = ?`, did).Limit(10).Offset(0).Order(`sign_at desc`).Find(&list)
 	return list
 }
 

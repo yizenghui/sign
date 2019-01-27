@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"time"
 
 	"github.com/chanxuehong/wechat.v2/mp/message/template"
 	wxbizdatacrypt "github.com/yilee/wx-biz-data-crypt"
@@ -253,10 +252,10 @@ func CheckOpenIDCanSign(openID string) error {
 }
 
 // GetTodaySignUsers 检查 openid 今天是否可以签到
-func GetTodaySignUsers(openID string) []db.Fans {
+func GetTodaySignUsers(page int64) []db.Fans {
 	var fans db.Fans
 	// todo 这里面需要进一层封装?
-	return fans.GetTodaySignFansW(time.Now())
+	return fans.GetTodaySignFansPage(page)
 }
 
 // TodaySignData 今日签到情况
