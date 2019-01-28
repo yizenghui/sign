@@ -127,7 +127,7 @@ func SendPostUpdateMSG(openID, formID, title, page string) error {
 func GetwxCodeUnlimit(scene, page string) (file string, err error) {
 
 	name := GetMd5String(fmt.Sprintf(`%v%v`, scene, page))
-	file = fmt.Sprintf(`file/%v.jpg`, name)
+	file = fmt.Sprintf(`static/qrcode/%v.jpg`, name)
 
 	_, err2 := os.Stat(file)
 	if os.IsNotExist(err2) {

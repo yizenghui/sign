@@ -54,6 +54,7 @@ func main() {
 	api.GET("/checkopenid", c.CheckOpenID)
 	api.GET("/getuserinfo", c.GetUserInfo)
 	api.GET("/user/:id", c.GetUserSignInfo)
+	api.GET("/user/:id/follow", c.GetTodaySignUsers)
 
 	// 解密数据内容(保存用户数据到库)
 	api.POST("/crypt", c.Crypt)

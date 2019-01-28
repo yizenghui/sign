@@ -19,6 +19,13 @@ func Test_CheckSign(t *testing.T) {
 	t.Fatal(fans.CheckSign())
 }
 
+func Test_FansCount(t *testing.T) {
+	var count int64
+	// Model(&Fans{}).Count(&count)
+	DB().Model(&Fans{}).Count(&count)
+	t.Fatal(count)
+}
+
 func Test_GetTodaySignFans(t *testing.T) {
 
 	var fans Fans

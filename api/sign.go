@@ -268,10 +268,10 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 	// mo := t.Format("一月")
 	d := t.Format(`01`)
 	// 顶部月
-	mmt := map[string]interface{}{"type": "text", "content": MateArr[d], "fontSize": 42, "color": "#402D16", "textAlign": "left", "top": 0, "left": 910, "bolder": false}
+	mmt := map[string]interface{}{"type": "text", "content": MateArr[d], "fontSize": 42, "color": "#ffffff", "textAlign": "left", "top": 0, "left": 910, "bolder": false}
 
 	// 顶部日
-	mdt := map[string]interface{}{"type": "text", "content": t.Format(`02`), "fontSize": 72, "color": "#402D16", "textAlign": "left", "top": 42, "left": 910, "bolder": true}
+	mdt := map[string]interface{}{"type": "text", "content": t.Format(`02`), "fontSize": 72, "color": "#ffffff", "textAlign": "left", "top": 42, "left": 910, "bolder": true}
 
 	// 时间
 	mts := map[string]interface{}{"type": "text", "content": t.Format(`15:04`), "fontSize": 80, "color": "#402D16", "textAlign": "left", "top": 422, "left": 330, "bolder": true}
@@ -286,13 +286,24 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 	mctt := map[string]interface{}{"type": "text", "content": "天", "fontSize": 50, "color": "#402D16", "textAlign": "left", "top": 450, "left": 870, "bolder": false}
 
 	// 正文
-	mtt := map[string]interface{}{"type": "text", "content": "124人正在参与", "fontSize": 40, "color": "#383549", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
+	mtt := map[string]interface{}{"type": "text", "content": fmt.Sprint(user.AllFansCount(), "人正在参与"), "fontSize": 40, "color": "#383549", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
 
+	//
 	// 用户分享二维码
-	muqr := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 920, "left": 900, "width": 150, "height": 150}
+	qrfile, err := cpi.GetwxCodeUnlimit(`1`, `pages/index`)
+
+	muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
+	if err != nil {
+
+		// 如果生成带参数二维码出错,设置回默认的二维码
+		muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 920, "left": 900, "width": 150, "height": 150}
+
+	}
+	// 鸡汤
+	mhc := map[string]interface{}{"type": "text", "content": "真正的自由，是自我掌握而不是随心所欲", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 950, "left": 860, "bolder": false}
 
 	// 正文
-	mqrt := map[string]interface{}{"type": "text", "content": "扫码跟我一起自律", "fontSize": 38, "color": "#383549", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
+	mqrt := map[string]interface{}{"type": "text", "content": "扫码一起自律", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
 
 	poster := Poster{
 		1080,
@@ -311,6 +322,7 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 			mtt,
 			muqr,
 			mqrt,
+			mhc,
 		},
 	}
 	return poster, nil
@@ -335,7 +347,7 @@ func GetAppConfig(c echo.Context) error {
 
 		config := map[string]interface{}{
 			"title":         "每天自律打卡",
-			"sharetitle":    "改变明天的人生",
+			"sharetitle":    "自律改变人生",
 			"sharepath":     fmt.Sprint("/pages/index?from=", user.ID),
 			"shareimageUrl": "",
 			// "shareimageUrl": "https://signapi.readfollow.com/static/images/bg.jpg",

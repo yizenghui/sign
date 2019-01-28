@@ -62,6 +62,12 @@ func (fans *Fans) AllFans() []Fans {
 	return list
 }
 
+// AllFansCount 获取粉丝所有信息(测试用)
+func (fans *Fans) AllFansCount() (count int64) {
+	DB().Model(&Fans{}).Count(&count)
+	return count
+}
+
 // GetTodaySignFans 获取今天签到的粉丝信息
 func (fans *Fans) GetTodaySignFans() []Fans {
 	var list []Fans
