@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo"
@@ -145,7 +146,7 @@ type Poster struct {
 }
 
 // BuildPoster 创建用户专属海报
-func BuildPoster(user *db.Fans) (Poster, error) {
+func BuildPosterx(user *db.Fans) (Poster, error) {
 
 	var MateArr = map[string]string{
 		//
@@ -214,6 +215,93 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 			mbg,
 			muh,
 			muhc,
+			mmt,
+			mdt,
+			mts,
+			mct,
+			mcd,
+			mctt,
+			mtt,
+			muqr,
+			mqrt,
+		},
+	}
+	return poster, nil
+}
+
+// BuildPoster 创建用户专属海报
+func BuildPoster(user *db.Fans) (Poster, error) {
+
+	var MateArr = map[string]string{
+		//
+		"01": "一月",
+		"02": "二月",
+		"03": "三月",
+		"04": "四月",
+		"05": "五月",
+		"06": "六月",
+		"07": "七月",
+		"08": "八月",
+		"09": "九月",
+		"10": "十月",
+		"11": "十一月",
+		"12": "十二月",
+	}
+
+	// 头像
+	avatar := user.AvatarURL
+	if avatar == `` { // todo 给默认头像
+		avatar = "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epJEPdPqQVgv6D8bojGT4DrGXuEC4Oe0GXs5sMsN4GGpCegTUsBgL9SPJkN9UqC1s0iakjQpwd4h4A/132"
+	}
+
+	avatar = strings.Replace(avatar, `/132`, `/0`, -1)
+
+	muh := map[string]interface{}{"type": "image", "url": avatar, "top": 410, "left": 84, "width": 200, "height": 200}
+
+	t := time.Now()
+	// 背景
+	mbg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/20190128164201.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
+
+	// 遮罩层
+	mmg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/mask.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
+
+	// mo := t.Format("一月")
+	d := t.Format(`01`)
+	// 顶部月
+	mmt := map[string]interface{}{"type": "text", "content": MateArr[d], "fontSize": 42, "color": "#402D16", "textAlign": "left", "top": 0, "left": 910, "bolder": false}
+
+	// 顶部日
+	mdt := map[string]interface{}{"type": "text", "content": t.Format(`02`), "fontSize": 72, "color": "#402D16", "textAlign": "left", "top": 42, "left": 910, "bolder": true}
+
+	// 时间
+	mts := map[string]interface{}{"type": "text", "content": t.Format(`15:04`), "fontSize": 80, "color": "#402D16", "textAlign": "left", "top": 422, "left": 330, "bolder": true}
+
+	// 正文
+	mct := map[string]interface{}{"type": "text", "content": "坚持自律", "fontSize": 50, "color": "#402D16", "textAlign": "left", "top": 450, "left": 590, "bolder": false}
+
+	// 坚持天数
+	mcd := map[string]interface{}{"type": "text", "content": user.AllToT, "fontSize": 80, "color": "red", "textAlign": "center", "top": 422, "left": 830, "bolder": true}
+
+	// 正文
+	mctt := map[string]interface{}{"type": "text", "content": "天", "fontSize": 50, "color": "#402D16", "textAlign": "left", "top": 450, "left": 870, "bolder": false}
+
+	// 正文
+	mtt := map[string]interface{}{"type": "text", "content": "124人正在参与", "fontSize": 40, "color": "#383549", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
+
+	// 用户分享二维码
+	muqr := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 920, "left": 900, "width": 150, "height": 150}
+
+	// 正文
+	mqrt := map[string]interface{}{"type": "text", "content": "扫码跟我一起自律", "fontSize": 38, "color": "#383549", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
+
+	poster := Poster{
+		1080,
+		1080,
+		true,
+		[]map[string]interface{}{
+			mbg,
+			muh,
+			mmg,
 			mmt,
 			mdt,
 			mts,
