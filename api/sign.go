@@ -259,11 +259,11 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 	muh := map[string]interface{}{"type": "image", "url": avatar, "top": 410, "left": 84, "width": 200, "height": 200}
 
 	t := time.Now()
-	// 背景
-	mbg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/20190128164201.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	// 背景https://signapi.readfollow.com/static/images/20190128164201.jpg
+	mbg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff12a37b95.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
 
-	// 遮罩层
-	mmg := map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/mask.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	// 遮罩层 https://signapi.readfollow.com/static/images/mask.png
+	mmg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff129e5088.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
 
 	// mo := t.Format("一月")
 	d := t.Format(`01`)
