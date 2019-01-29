@@ -290,13 +290,13 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 
 	//
 	// 用户分享二维码
-	qrfile, err := cpi.GetwxCodeUnlimit(`1`, `pages/index`)
+	qrfile, err := cpi.GetwxCodeUnlimit(strconv.FormatInt(int64(user.ID), 10), `pages/index`)
 
 	muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
 	if err != nil {
 
 		// 如果生成带参数二维码出错,设置回默认的二维码
-		muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/1531385433625.jpeg", "top": 920, "left": 900, "width": 150, "height": 150}
+		muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
 
 	}
 	// 鸡汤

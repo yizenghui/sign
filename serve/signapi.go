@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -33,6 +35,23 @@ func main() {
 		}
 		var err2 error
 		return err2
+	})
+
+	// 获取推荐码(图片资源)
+	e.GET("/qrcodebatch", func(c echo.Context) error {
+
+		// 从多少开始
+		offset, _ := strconv.Atoi(c.QueryParam("offset"))
+		// 取生成多少个
+		limit, _ := strconv.Atoi(c.QueryParam("limit"))
+
+		for i := offset; i < limit+offset; i++ {
+			// fmt.Println(i)
+			cpi.GetwxCodeUnlimit(strconv.Itoa(i), `pages/index`)
+		}
+
+		return c.String(http.StatusOK, fmt.Sprint("qrcode batch init offset ", strconv.Itoa(offset), " limit ", strconv.Itoa(limit)))
+
 	})
 
 	e.GET("/gettodaysignusers", c.GetTodaySignUsers)
@@ -92,8 +111,8 @@ func main() {
 
 	e.Static("/static", "static")
 	// e.Logger.Fatal(e.Start(":80"))
-	e.Logger.Fatal(e.Start(":8009"))
-	// e.Logger.Fatal(e.StartTLS(":443", "ssl/1781098_signapi.readfollow.com.pem", "ssl/1781098_signapi.readfollow.com.key"))
+	// e.Logger.Fatal(e.Start(":8009"))
+	e.Logger.Fatal(e.StartTLS(":443", "ssl/1781098_signapi.readfollow.com.pem", "ssl/1781098_signapi.readfollow.com.key"))
 	// e.Logger.Fatal(e.StartAutoTLS(":443"))
 
 }
