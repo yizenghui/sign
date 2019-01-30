@@ -11,7 +11,7 @@ import (
 var db *gorm.DB
 
 func init() {
-	DB().AutoMigrate(&Fans{})
+	DB().AutoMigrate(&Fans{}, &Sign{})
 }
 
 //DB 返回 *gorm.DB

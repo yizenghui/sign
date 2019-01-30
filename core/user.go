@@ -281,10 +281,19 @@ func GetTodaySignInfo(openID string) TodaySignData {
 }
 
 // FansDoSign 粉丝签到
-func FansDoSign(openID string) error {
+func FansDoSign(openID, ids string) error {
 	var fans db.Fans
 	fans.GetFansByOpenID(openID)
-	if fans.DoSign() {
+
+	//
+	// itemIDS := strings.Split(ids, ",")
+
+	if fans.DoSign(ids) { //签到成功
+		//
+		// if len(itemIDS) > 0 {
+
+		// 	db.DB().Model(&sign).Related(&languages, "Languages")
+		// }
 		return nil
 	}
 	return errors.New(string(`openID today is sign!!!`))

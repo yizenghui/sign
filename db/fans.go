@@ -75,6 +75,13 @@ func (fans *Fans) GetTodaySignFans() []Fans {
 	return list
 }
 
+// GetLastSign 获取粉丝最后一次签到信息
+func (fans *Fans) GetLastSign() Sign {
+	var sign Sign
+	DB().Where("fans_id = ?", fans.ID).Order(`id desc`).First(&sign)
+	return sign
+}
+
 // GetTodaySignFansPage 获取今天签到的粉丝信息
 func (fans *Fans) GetTodaySignFansPage(page int64) []Fans {
 	_, _, did := XID(time.Now())
@@ -99,7 +106,7 @@ func (fans *Fans) GetTodaySignFansW(signAt time.Time) []Fans {
 func (fans *Fans) ShareLog() {
 	var share = Share{}
 	share.FansID = fans.ID
-	DB().Create(share)
+	DB().Create(&share)
 }
 
 // Relation 记录关联 粉丝id
@@ -126,7 +133,7 @@ func XID(then time.Time) (mid, wid, did int64) {
 }
 
 // DoSign 进行签到
-func (fans *Fans) DoSign() bool {
+func (fans *Fans) DoSign(pids string) bool {
 	if !fans.CheckSign() { // 首先检查一下今天能不能签到
 		return false
 	}
@@ -165,24 +172,26 @@ func (fans *Fans) DoSign() bool {
 	fans.AllRank = fans.AllRank + score
 	fans.AllToT++
 	fans.DaySignID = did
-	fans.NextSignAdd = 0     //重置下次加成
-	fans.SignAt = time.Now() // 记录签到时间
+	fans.SignAt = time.Now()             // 记录签到时间
+	fans.NextSignAdd = 0                 // 重置下次加成
+	fans.LastSignAt = fans.GetNextSign() // 记录下次连签时间
+	fans.SignLog(score, pids)
 	fans.Save()
-	fans.SignLog(score)
 	return true
 }
 
 // SignLog 保存签到记录
-func (fans *Fans) SignLog(score int64) {
+func (fans *Fans) SignLog(score int64, pids string) (sign Sign) {
 	mid, wid, did := XID(time.Now())
 	// 签到记录
-	var sign = Sign{}
 	sign.FansID = fans.ID
 	sign.MID = mid
 	sign.WID = wid
 	sign.DID = did
 	sign.Score = score // 本次签到得分
-	DB().Create(sign)
+	sign.PIDS = pids
+	DB().Create(&sign)
+	return sign
 }
 
 // GetThenSignScore 计算现在签到得分

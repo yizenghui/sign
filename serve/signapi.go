@@ -88,6 +88,7 @@ func main() {
 
 	api.GET("/getposter", c.GetPosterConfig)
 	api.GET("/getappconfig", c.GetAppConfig)
+	api.GET("/getsignconfig", c.GetSignConfig)
 
 	api.GET("/gettodaysignusers", c.GetTodaySignUsers)
 

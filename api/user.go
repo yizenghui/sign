@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -25,7 +24,7 @@ func GetToken(c echo.Context) error {
 	ret, _ := cpi.GetOpenID(code)
 	if code != "" && ret.OpenID != "" {
 
-		log.Println(ret)
+		// log.Println(ret)
 		// Set custom claims
 		claims := &JwtCustomClaims{
 			ret.OpenID,

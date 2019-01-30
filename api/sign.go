@@ -28,10 +28,10 @@ func CheckTodaySign(c echo.Context) error {
 func DoSign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		if cpi.FansDoSign(openID) == nil {
-			return c.JSON(http.StatusOK, `t`)
-		}
-		return c.JSON(http.StatusOK, `f`)
+		// 	if cpi.FansDoSign(openID) == nil {
+		// 		return c.JSON(http.StatusOK, `t`)
+		// 	}
+		// 	return c.JSON(http.StatusOK, `f`)
 	}
 	return c.JSON(http.StatusOK, `f`)
 }
@@ -95,10 +95,11 @@ func GetUserInfo(c echo.Context) error {
 func UserDoSign(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
-		if cpi.FansDoSign(openID) == nil {
+		ids := c.QueryParam("ids")
+		if cpi.FansDoSign(openID, ids) == nil {
 			return c.JSON(http.StatusOK, `t`)
 		}
-		return c.JSON(http.StatusNotFound, `Please come back tomorrow.`)
+		return c.JSON(http.StatusNotFound, `Please come back tomorrow.x`)
 	}
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
 }
@@ -146,6 +147,7 @@ type Poster struct {
 }
 
 // BuildPoster 创建用户专属海报
+/*
 func BuildPosterx(user *db.Fans) (Poster, error) {
 
 	var MateArr = map[string]string{
@@ -228,7 +230,7 @@ func BuildPosterx(user *db.Fans) (Poster, error) {
 	}
 	return poster, nil
 }
-
+*/
 // BuildPoster 创建用户专属海报
 func BuildPoster(user *db.Fans) (Poster, error) {
 
@@ -260,10 +262,12 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 
 	t := time.Now()
 	// 背景https://signapi.readfollow.com/static/images/20190128164201.jpg
-	mbg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff12a37b95.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	// mbg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff12a37b95.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	mbg := map[string]interface{}{"type": "image", "url": "https://img.wechatrank.com/static/images/sunset-photo.jpg", "top": 0, "left": 0, "width": 1080, "height": 1080}
 
 	// 遮罩层 https://signapi.readfollow.com/static/images/mask.png
-	mmg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff129e5088.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	// mmg := map[string]interface{}{"type": "image", "url": "https://i.loli.net/2019/01/29/5c4ff129e5088.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
+	mmg := map[string]interface{}{"type": "image", "url": "https://img.wechatrank.com/static/images/mask.png", "top": 0, "left": 0, "width": 1080, "height": 1080}
 
 	// mo := t.Format("一月")
 	d := t.Format(`01`)
@@ -292,11 +296,14 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 	// 用户分享二维码
 	qrfile, err := cpi.GetwxCodeUnlimit(strconv.FormatInt(int64(user.ID), 10), `pages/index`)
 
-	muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
+	muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://img.wechatrank.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
+	// muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
 	if err != nil {
 
 		// 如果生成带参数二维码出错,设置回默认的二维码
-		muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
+		// muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
+
+		muqr = map[string]interface{}{"type": "image", "url": "https://img.wechatrank.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
 
 	}
 	// 鸡汤
@@ -344,15 +351,106 @@ func GetAppConfig(c echo.Context) error {
 	openID := getOpenID(c)
 	if openID != "" {
 		user, _ := getUser(openID)
-
+		var tooltipcontent, tooltipclass, tooltiparrowstyle, tooltipstyle string
+		tooltipcontent = "《东日》 设计师：刘健"
+		tooltipclass = "tooltip-top"
+		tooltiparrowstyle = "left: 52px;"
+		tooltipstyle = `position: absolute; bottom: 120rpx; left: 15%;`
+		// 在用户第3次打卡时 提醒用户添加到我的小程序
+		if user.AllToT == 3 {
+			tooltipcontent = "添加到我的小程序"
+			tooltipclass = "tooltip-bottom"
+			tooltiparrowstyle = "right: 48px;"
+			tooltipstyle = `position: absolute; top: 5px; right: 5%;`
+		}
 		config := map[string]interface{}{
 			"title":         "每天自律打卡",
 			"sharetitle":    "自律改变人生",
 			"sharepath":     fmt.Sprint("/pages/index?from=", user.ID),
 			"shareimageUrl": "",
 			// "shareimageUrl": "https://signapi.readfollow.com/static/images/bg.jpg",
+			// tooltip工具提示
+			"tooltipcontent":    tooltipcontent,
+			"tooltipclass":      tooltipclass,
+			"tooltiparrowstyle": tooltiparrowstyle,
+			"tooltipstyle":      tooltipstyle,
 		}
 
+		return c.JSON(http.StatusOK, config)
+	}
+	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
+}
+
+// GetSignConfig 获取签到参数配置
+func GetSignConfig(c echo.Context) error {
+	openID := getOpenID(c)
+	if openID != "" {
+		user, _ := getUser(openID)
+		sign := user.GetLastSign()
+
+		var checked1, checked2, checked3, checked4, checked5, checked6 bool
+
+		if sign.ID > 0 && sign.PIDS != "" {
+
+			if b := strings.Contains(sign.PIDS, string("1")); b == true {
+				checked1 = true
+			}
+			if b := strings.Contains(sign.PIDS, string("2")); b == true {
+				checked2 = true
+			}
+			if b := strings.Contains(sign.PIDS, string("3")); b == true {
+				checked3 = true
+			}
+			if b := strings.Contains(sign.PIDS, string("4")); b == true {
+				checked4 = true
+			}
+			if b := strings.Contains(sign.PIDS, string("5")); b == true {
+				checked5 = true
+			}
+			if b := strings.Contains(sign.PIDS, string("6")); b == true {
+				checked6 = true
+			}
+		}
+
+		config := []map[string]interface{}{
+
+			map[string]interface{}{
+				"name":    "早睡早起",
+				"value":   "1",
+				"checked": checked1,
+				"intro":   "",
+			},
+			map[string]interface{}{
+				"name":    "运动健身",
+				"value":   "2",
+				"checked": checked2,
+				"intro":   "",
+			},
+			map[string]interface{}{
+				"name":    "学习拓展",
+				"value":   "3",
+				"checked": checked3,
+				"intro":   "",
+			},
+			map[string]interface{}{
+				"name":    "远离手机",
+				"value":   "4",
+				"checked": checked4,
+				"intro":   "",
+			},
+			map[string]interface{}{
+				"name":    "情绪控制",
+				"value":   "5",
+				"checked": checked5,
+				"intro":   "",
+			},
+			map[string]interface{}{
+				"name":    "高效执行",
+				"value":   "6",
+				"checked": checked6,
+				"intro":   "",
+			},
+		}
 		return c.JSON(http.StatusOK, config)
 	}
 	return c.JSON(http.StatusUnauthorized, `openid is empty.`)
