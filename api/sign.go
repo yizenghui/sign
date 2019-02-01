@@ -250,6 +250,32 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 		"12": "十二月",
 	}
 
+	sign := user.GetLastSign()
+
+	var checked1, checked2, checked3, checked4, checked5, checked6 bool
+
+	if sign.ID > 0 && sign.PIDS != "" {
+
+		if b := strings.Contains(sign.PIDS, string("1")); b == true {
+			checked1 = true
+		}
+		if b := strings.Contains(sign.PIDS, string("2")); b == true {
+			checked2 = true
+		}
+		if b := strings.Contains(sign.PIDS, string("3")); b == true {
+			checked3 = true
+		}
+		if b := strings.Contains(sign.PIDS, string("4")); b == true {
+			checked4 = true
+		}
+		if b := strings.Contains(sign.PIDS, string("5")); b == true {
+			checked5 = true
+		}
+		if b := strings.Contains(sign.PIDS, string("6")); b == true {
+			checked6 = true
+		}
+	}
+
 	// 头像
 	avatar := user.AvatarURL
 	if avatar == `` { // todo 给默认头像
@@ -290,27 +316,60 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 	mctt := map[string]interface{}{"type": "text", "content": "天", "fontSize": 50, "color": "#402D16", "textAlign": "left", "top": 450, "left": 870, "bolder": false}
 
 	// 正文
-	mtt := map[string]interface{}{"type": "text", "content": fmt.Sprint(user.AllFansCount(), "人正在参与"), "fontSize": 40, "color": "#383549", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
+	// mtt := map[string]interface{}{"type": "text", "content": fmt.Sprint(user.AllFansCount(), "人正在参与"), "fontSize": 40, "color": "#383549", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
+
+	mtt := map[string]interface{}{"type": "text", "content": "真正的自由，是自我掌握而不是随心所欲", "fontSize": 32, "color": "#827f7b", "textAlign": "left", "top": 560, "left": 340, "bolder": false}
 
 	//
 	// 用户分享二维码
-	qrfile, err := cpi.GetwxCodeUnlimit(strconv.FormatInt(int64(user.ID), 10), `pages/index`)
+	// qrfile, err := cpi.GetwxCodeUnlimit(strconv.FormatInt(int64(user.ID), 10), `pages/index`)
 
-	muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://img.wechatrank.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
-	// muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
-	if err != nil {
+	// muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://img.wechatrank.com/", qrfile), "top": 950, "left": 950, "width": 100, "height": 100}
+	// // muqr := map[string]interface{}{"type": "image", "url": fmt.Sprint("https://signapi.readfollow.com/", qrfile), "top": 920, "left": 900, "width": 150, "height": 150}
+	// if err != nil {
 
-		// 如果生成带参数二维码出错,设置回默认的二维码
-		// muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
+	// 如果生成带参数二维码出错,设置回默认的二维码
+	// muqr = map[string]interface{}{"type": "image", "url": "https://signapi.readfollow.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
 
-		muqr = map[string]interface{}{"type": "image", "url": "https://img.wechatrank.com/static/images/qrcode.jpg", "top": 920, "left": 900, "width": 150, "height": 150}
+	muqr := map[string]interface{}{"type": "image", "url": "https://img.wechatrank.com/static/images/qrcode.jpg", "top": 950, "left": 950, "width": 100, "height": 100}
 
-	}
+	// }
 	// 鸡汤
-	mhc := map[string]interface{}{"type": "text", "content": "真正的自由，是自我掌握而不是随心所欲", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 950, "left": 860, "bolder": false}
+	// mhc := map[string]interface{}{"type": "text", "content": "真正的自由，是自我掌握而不是随心所欲", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
 
 	// 正文
-	mqrt := map[string]interface{}{"type": "text", "content": "扫码一起自律", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
+	// mqrt := map[string]interface{}{"type": "text", "content": "扫码一起自律", "fontSize": 32, "color": "#827f7b", "textAlign": "right", "top": 1000, "left": 860, "bolder": false}
+
+	mtdp1 := map[string]interface{}{"type": "text", "content": " ☐ 早睡早起", "fontSize": 32, "color": "red", "textAlign": "right", "top": 950, "left": 250, "bolder": true}
+
+	if checked1 {
+		mtdp1 = map[string]interface{}{"type": "text", "content": " ☑ 早睡早起", "fontSize": 32, "color": "green", "textAlign": "right", "top": 950, "left": 250, "bolder": true}
+	}
+
+	mtdp2 := map[string]interface{}{"type": "text", "content": " ☐ 运动健身", "fontSize": 32, "color": "red", "textAlign": "right", "top": 950, "left": 500, "bolder": true}
+	if checked2 {
+		mtdp2 = map[string]interface{}{"type": "text", "content": " ☑ 运动健身", "fontSize": 32, "color": "green", "textAlign": "right", "top": 950, "left": 500, "bolder": true}
+	}
+
+	mtdp3 := map[string]interface{}{"type": "text", "content": " ☐ 学习拓展", "fontSize": 32, "color": "red", "textAlign": "right", "top": 950, "left": 750, "bolder": true}
+	if checked3 {
+		mtdp3 = map[string]interface{}{"type": "text", "content": " ☑ 学习拓展", "fontSize": 32, "color": "green", "textAlign": "right", "top": 950, "left": 750, "bolder": true}
+	}
+
+	mtdp4 := map[string]interface{}{"type": "text", "content": " ☐ 远离手机", "fontSize": 32, "color": "red", "textAlign": "right", "top": 1000, "left": 250, "bolder": true}
+	if checked4 {
+		mtdp4 = map[string]interface{}{"type": "text", "content": " ☑ 远离手机", "fontSize": 32, "color": "green", "textAlign": "right", "top": 1000, "left": 250, "bolder": true}
+	}
+
+	mtdp5 := map[string]interface{}{"type": "text", "content": " ☐ 情绪控制", "fontSize": 32, "color": "red", "textAlign": "right", "top": 1000, "left": 500, "bolder": true}
+	if checked5 {
+		mtdp5 = map[string]interface{}{"type": "text", "content": " ☑ 情绪控制", "fontSize": 32, "color": "green", "textAlign": "right", "top": 1000, "left": 500, "bolder": true}
+	}
+
+	mtdp6 := map[string]interface{}{"type": "text", "content": " ☐ 高效执行", "fontSize": 32, "color": "red", "textAlign": "right", "top": 1000, "left": 750, "bolder": true}
+	if checked6 {
+		mtdp6 = map[string]interface{}{"type": "text", "content": " ☑ 高效执行", "fontSize": 32, "color": "green", "textAlign": "right", "top": 1000, "left": 750, "bolder": true}
+	}
 
 	poster := Poster{
 		1080,
@@ -328,8 +387,14 @@ func BuildPoster(user *db.Fans) (Poster, error) {
 			mctt,
 			mtt,
 			muqr,
-			mqrt,
-			mhc,
+			// mqrt,
+			// mhc,
+			mtdp1,
+			mtdp2,
+			mtdp3,
+			mtdp4,
+			mtdp5,
+			mtdp6,
 		},
 	}
 	return poster, nil
